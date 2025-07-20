@@ -2,12 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import { Header } from '@/components/Header';
+import { BottomNav } from '@/components/BottomNav';
 import { TankLevelDisplay, SensorDevice, fetchSensorData } from '@/components/TankLevelDisplay';
 import { DeviceForm } from '@/components/DeviceForm';
-import { auth, db, getUserDevices } from '@/lib/firebase';
+import { auth, db, getUserDevices, fetchRealTimeSensorData, deleteDevice } from '@/lib/firebase';
 import { useRouter } from 'next/navigation';
 import { doc, getDoc, updateDoc, arrayUnion } from 'firebase/firestore';
-import { PlusIcon, UserCircleIcon, ShareIcon } from '@heroicons/react/24/outline';
+import { PlusIcon, UserCircleIcon, ShareIcon, TrashIcon } from '@heroicons/react/24/outline';
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -20,6 +21,10 @@ export default function DashboardPage() {
   const [shareLoading, setShareLoading] = useState(false);
   const [shareError, setShareError] = useState('');
   const [shareSuccess, setShareSuccess] = useState('');
+  const [deleteModalDevice, setDeleteModalDevice] = useState<string | null>(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [lastRefreshTime, setLastRefreshTime] = useState<string>('');
+  const [autoRefreshEnabled, setAutoRefreshEnabled] = useState(true);
   
   // Function to generate greeting based on time of day
   const getGreeting = () => {
@@ -49,6 +54,37 @@ export default function DashboardPage() {
     return () => unsubscribe();
   }, [router]);
 
+  // Auto-refresh devices every 30 seconds
+  useEffect(() => {
+    if (!user || !autoRefreshEnabled) return;
+
+    const autoRefreshInterval = setInterval(() => {
+      loadDevices(user.uid);
+      setLastRefreshTime(new Date().toLocaleTimeString());
+    }, 30000); // 30 seconds
+
+    return () => clearInterval(autoRefreshInterval);
+  }, [user, autoRefreshEnabled]);
+
+  // Handle visibility change to pause/resume auto-refresh
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        setAutoRefreshEnabled(false);
+      } else {
+        setAutoRefreshEnabled(true);
+        // Immediately refresh when page becomes visible
+        if (user) {
+          loadDevices(user.uid);
+          setLastRefreshTime(new Date().toLocaleTimeString());
+        }
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, [user]);
+
   const loadDevices = async (userId: string) => {
     try {
       // Get all deviceIds this user has access to
@@ -68,13 +104,42 @@ export default function DashboardPage() {
         
         if (deviceSnap.exists()) {
           const data = deviceSnap.data();
+          
+          // Fetch current real-time data from Firebase Realtime Database
+          // Only fetch if user is authenticated
+          let currentData = null;
+          try {
+            currentData = await fetchRealTimeSensorData(deviceId);
+          } catch (error) {
+            console.log(`Could not fetch real-time data for ${deviceId}:`, error);
+          }
+          
+          // Combine historical data with current reading
+          let historicalData = data.data || [];
+          
+          // If we have current real-time data, add it to the historical data
+          if (currentData) {
+            const currentReading = {
+              timestamp: currentData.timestamp,
+              level: Math.round(currentData.level * 10) / 10,
+              status: currentData.status
+            };
+            
+            // Add current reading if it's not already the latest
+            const lastReading = historicalData[historicalData.length - 1];
+            if (!lastReading || 
+                new Date(currentReading.timestamp).getTime() > new Date(lastReading.timestamp).getTime()) {
+              historicalData = [...historicalData, currentReading];
+            }
+          }
+          
           devicesList.push({
             id: deviceId,
             name: data.name,
             location: data.location,
             maxCapacity: data.maxCapacity,
-            data: data.data || [],
-            lastUpdated: data.lastUpdated
+            data: historicalData,
+            lastUpdated: currentData?.lastUpdated || data.lastUpdated
           });
         }
       }
@@ -126,6 +191,30 @@ export default function DashboardPage() {
     }
   };
 
+  const handleDeleteDevice = async () => {
+    if (!deleteModalDevice || !user) return;
+    
+    setDeleteLoading(true);
+    
+    try {
+      const success = await deleteDevice(deleteModalDevice, user.uid);
+      
+      if (success) {
+        // Remove device from local state
+        setDevices(prevDevices => 
+          prevDevices.filter(device => device.id !== deleteModalDevice)
+        );
+        setDeleteModalDevice(null);
+      } else {
+        console.error('Failed to delete device');
+      }
+    } catch (error) {
+      console.error('Error deleting device:', error);
+    } finally {
+      setDeleteLoading(false);
+    }
+  };
+
   const handleShareDevice = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!shareModalDevice || !shareEmail || !user) return;
@@ -166,7 +255,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col pb-20 md:pb-0">
       <Header isAuthenticated={!!user} />
       
       <main className="flex-1 container mx-auto px-4 py-8 pt-24">
@@ -197,19 +286,42 @@ export default function DashboardPage() {
         
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-8">
           <div>
-            <h1 className="text-2xl font-bold">Your Water Tanks</h1>
+            <div className="flex items-center gap-3 mb-1">
+              <h1 className="text-2xl font-bold">Your Water Tanks</h1>
+              <div className="flex items-center gap-2">
+                <div className={`h-2 w-2 rounded-full ${autoRefreshEnabled ? 'bg-green-500 animate-pulse' : 'bg-gray-400'}`}></div>
+                <span className="text-xs text-foreground/60">
+                  {autoRefreshEnabled ? 'Auto-refresh ON' : 'Auto-refresh OFF'}
+                </span>
+              </div>
+            </div>
             <p className="text-foreground/70">
               Monitor your water levels in real-time
+              {lastRefreshTime && (
+                <span className="text-xs ml-2">• Last updated: {lastRefreshTime}</span>
+              )}
             </p>
           </div>
           
-          <button
-            onClick={() => setShowAddForm(true)}
-            className="mt-4 md:mt-0 px-4 py-2 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors flex items-center gap-2"
-          >
-            <PlusIcon className="h-5 w-5" />
-            Add New Device
-          </button>
+          <div className="mt-4 md:mt-0 flex items-center gap-3">
+            <button
+              onClick={() => setAutoRefreshEnabled(!autoRefreshEnabled)}
+              className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
+                autoRefreshEnabled 
+                  ? 'bg-green-100 text-green-700 hover:bg-green-200' 
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              {autoRefreshEnabled ? '⏸️ Pause' : '▶️ Resume'} Auto-refresh
+            </button>
+            <button
+              onClick={() => setShowAddForm(true)}
+              className="px-4 py-2 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors flex items-center gap-2"
+            >
+              <PlusIcon className="h-5 w-5" />
+              Add New Device
+            </button>
+          </div>
         </div>
 
         {showAddForm ? (
@@ -238,13 +350,22 @@ export default function DashboardPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {devices.map((device) => (
                   <div key={device.id} className="relative">
-                    <button 
-                      onClick={() => setShareModalDevice(device.id)}
-                      className="absolute top-2 right-2 p-2 rounded-full bg-background/80 hover:bg-background shadow-sm z-10"
-                      title="Share this device"
-                    >
-                      <ShareIcon className="h-5 w-5 text-primary" />
-                    </button>
+                    <div className="absolute top-3 right-3 flex gap-2 z-10">
+                      <button 
+                        onClick={() => setShareModalDevice(device.id)}
+                        className="p-2 rounded-lg bg-card/80 backdrop-blur-sm hover:bg-secondary/80 transition-all duration-200 border border-border/50"
+                        title="Share this device"
+                      >
+                        <ShareIcon className="h-4 w-4 text-primary" />
+                      </button>
+                      <button 
+                        onClick={() => setDeleteModalDevice(device.id)}
+                        className="p-2 rounded-lg bg-card/80 backdrop-blur-sm hover:bg-destructive/10 transition-all duration-200 border border-border/50"
+                        title="Delete this device"
+                      >
+                        <TrashIcon className="h-4 w-4 text-destructive" />
+                      </button>
+                    </div>
                     <TankLevelDisplay 
                       device={device} 
                       onRefresh={handleRefreshData} 
@@ -319,6 +440,39 @@ export default function DashboardPage() {
           </div>
         </div>
       )}
+      
+      {/* Delete Device Modal */}
+      {deleteModalDevice && (
+        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-card border border-border rounded-lg shadow-lg max-w-md w-full p-6">
+            <h3 className="text-xl font-bold mb-4 text-red-600">Delete Device</h3>
+            <p className="text-sm text-foreground/70 mb-6">
+              Are you sure you want to delete this device? This action cannot be undone and will remove all associated data.
+            </p>
+            
+            <div className="flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setDeleteModalDevice(null)}
+                className="px-4 py-2 border border-border rounded-md hover:bg-secondary transition-colors"
+                disabled={deleteLoading}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleDeleteDevice}
+                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
+                disabled={deleteLoading}
+              >
+                {deleteLoading ? 'Deleting...' : 'Delete Device'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      <BottomNav isAuthenticated={!!user} />
     </div>
   );
 }

@@ -2,14 +2,16 @@
 
 import { useState, useEffect } from 'react';
 import { Header } from '@/components/Header';
-import { auth, db } from '@/lib/firebase';
+import { BottomNav } from '@/components/BottomNav';
+import { auth, db, getUserDevices, deleteDevice } from '@/lib/firebase';
 import { useRouter } from 'next/navigation';
 import { 
   collection, 
   getDocs, 
   doc, 
   deleteDoc, 
-  updateDoc 
+  updateDoc,
+  getDoc 
 } from 'firebase/firestore';
 import { 
   TrashIcon, 
@@ -52,20 +54,33 @@ export default function SettingsPage() {
 
   const loadDevices = async (userId: string) => {
     try {
-      const devicesSnapshot = await getDocs(collection(db, 'users', userId, 'devices'));
+      // Get all deviceIds this user has access to (same as dashboard)
+      const deviceIds = await getUserDevices(userId);
+      
+      if (deviceIds.length === 0) {
+        setDevices([]);
+        return;
+      }
+      
+      // Fetch each device data from central devices collection
       const devicesList: SensorDevice[] = [];
       
-      devicesSnapshot.forEach((doc) => {
-        const data = doc.data();
-        devicesList.push({
-          id: doc.id,
-          name: data.name,
-          location: data.location,
-          maxCapacity: data.maxCapacity,
-          data: data.data || [],
-          lastUpdated: data.lastUpdated
-        });
-      });
+      for (const deviceId of deviceIds) {
+        const deviceRef = doc(db, 'devices', deviceId);
+        const deviceSnap = await getDoc(deviceRef);
+        
+        if (deviceSnap.exists()) {
+          const data = deviceSnap.data();
+          devicesList.push({
+            id: deviceId,
+            name: data.name,
+            location: data.location,
+            maxCapacity: data.maxCapacity,
+            data: data.data || [],
+            lastUpdated: data.lastUpdated
+          });
+        }
+      }
       
       setDevices(devicesList);
     } catch (error) {
@@ -77,11 +92,16 @@ export default function SettingsPage() {
     try {
       if (!user) return;
       
-      await deleteDoc(doc(db, 'users', user.uid, 'devices', deviceId));
+      // Use the same delete function as dashboard
+      const success = await deleteDevice(deviceId, user.uid);
       
-      // Update local state
-      setDevices(devices.filter(device => device.id !== deviceId));
-      setDeleteConfirm(null);
+      if (success) {
+        // Update local state
+        setDevices(devices.filter(device => device.id !== deviceId));
+        setDeleteConfirm(null);
+      } else {
+        console.error('Failed to delete device');
+      }
     } catch (error) {
       console.error('Error deleting device:', error);
     }
@@ -115,8 +135,8 @@ export default function SettingsPage() {
         return;
       }
       
-      // Update in Firestore
-      const deviceRef = doc(db, 'users', user.uid, 'devices', editingDevice);
+      // Update in central devices collection
+      const deviceRef = doc(db, 'devices', editingDevice);
       await updateDoc(deviceRef, {
         name: formValues.name,
         location: formValues.location,
@@ -148,8 +168,8 @@ export default function SettingsPage() {
       const device = devices.find(d => d.id === calibratingDevice);
       if (!device) return;
       
-      // Update the latest reading in Firestore
-      const deviceRef = doc(db, 'users', user.uid, 'devices', calibratingDevice);
+      // Update the latest reading in central devices collection
+      const deviceRef = doc(db, 'devices', calibratingDevice);
       
       // Get the latest data point and update it
       const updatedData = [...device.data];
@@ -209,7 +229,7 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col pb-20 md:pb-0">
       <Header isAuthenticated={!!user} />
       
       <main className="flex-1 container mx-auto px-4 py-8 pt-24"> {/* Added pt-24 for fixed header spacing */}
@@ -419,6 +439,8 @@ export default function SettingsPage() {
           </div>
         )}
       </main>
+      
+      <BottomNav isAuthenticated={!!user} />
     </div>
   );
 }

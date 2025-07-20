@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { auth } from '@/lib/firebase';
 import { useRouter } from 'next/navigation';
 import { Header } from '@/components/Header';
+import { BottomNav } from '@/components/BottomNav';
 import { ThemeToggle } from '@/components/ThemeToggle';
 
 export default function HomePage() {
@@ -22,7 +23,7 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col pb-20 md:pb-0">
       <Header isAuthenticated={isAuthenticated} />
       
       <main className="flex-1 pt-16"> {/* Added pt-16 to account for fixed header */}
@@ -40,33 +41,38 @@ export default function HomePage() {
               and never run out of water again.
             </p>
             
-            <div className="flex flex-col sm:flex-row justify-center gap-4">
+            <div className="flex flex-col sm:flex-row justify-center gap-4 px-4 sm:px-0">
               {isAuthenticated ? (
                 <Link 
                   href="/dashboard" 
-                  className="px-8 py-4 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors text-lg font-medium shadow-lg shadow-primary/30 animate-pulse hover:animate-none relative ring-2 ring-primary/50 group"
+                  className="w-full sm:w-auto px-8 py-4 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 active:scale-95 transition-all duration-200 text-lg font-semibold shadow-lg shadow-primary/30 relative overflow-hidden group flex items-center justify-center gap-3"
                 >
-                  <span className="relative z-10 flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
-                      <path d="M18.375 2.25c-1.035 0-1.875.84-1.875 1.875v15.75c0 1.035.84 1.875 1.875 1.875h.75c1.035 0 1.875-.84 1.875-1.875V4.125c0-1.036-.84-1.875-1.875-1.875h-.75zM9.75 8.625c0-1.036.84-1.875 1.875-1.875h.75c1.036 0 1.875.84 1.875 1.875v11.25c0 1.035-.84 1.875-1.875 1.875h-.75c-1.036 0-1.875-.84-1.875-1.875V8.625zM3 13.125c0-1.036.84-1.875 1.875-1.875h.75c1.036 0 1.875.84 1.875 1.875v6.75c0 1.035-.84 1.875-1.875 1.875h-.75C3.84 21.75 3 20.91 3 19.875v-6.75z" />
-                    </svg>
-                    Go to Dashboard
-                  </span>
-                  <span className="absolute inset-0 bg-gradient-to-r from-primary to-primary/80 opacity-0 group-hover:opacity-100 transition-opacity rounded-md"></span>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+                    <path d="M18.375 2.25c-1.035 0-1.875.84-1.875 1.875v15.75c0 1.035.84 1.875 1.875 1.875h.75c1.035 0 1.875-.84 1.875-1.875V4.125c0-1.036-.84-1.875-1.875-1.875h-.75zM9.75 8.625c0-1.036.84-1.875 1.875-1.875h.75c1.036 0 1.875.84 1.875 1.875v11.25c0 1.035-.84 1.875-1.875 1.875h-.75c-1.036 0-1.875-.84-1.875-1.875V8.625zM3 13.125c0-1.036.84-1.875 1.875-1.875h.75c1.036 0 1.875.84 1.875 1.875v6.75c0 1.035-.84 1.875-1.875 1.875h-.75C3.84 21.75 3 20.91 3 19.875v-6.75z" />
+                  </svg>
+                  <span>Go to Dashboard</span>
+                  <span className="absolute inset-0 bg-gradient-to-r from-primary/20 to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl"></span>
                 </Link>
               ) : (
                 <Link 
                   href="/auth/login" 
-                  className="px-8 py-3 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors text-lg font-medium"
+                  className="w-full sm:w-auto px-8 py-4 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 active:scale-95 transition-all duration-200 text-lg font-semibold shadow-lg shadow-primary/30 flex items-center justify-center gap-3"
                 >
-                  Get Started
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+                    <path d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                  </svg>
+                  <span>Get Started</span>
                 </Link>
               )}
               <a 
                 href="#features" 
-                className="px-8 py-3 rounded-md border border-border hover:bg-secondary transition-colors text-lg font-medium"
+                className="w-full sm:w-auto px-8 py-4 rounded-xl border-2 border-primary/30 bg-background hover:bg-primary/5 hover:border-primary/50 active:scale-95 transition-all duration-200 text-lg font-semibold text-primary flex items-center justify-center gap-3 group"
               >
-                Learn More
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6 group-hover:translate-y-1 transition-transform">
+                  <path d="M7 13l3 3 7-7" />
+                  <path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9c2.12 0 4.07.74 5.61 1.98" />
+                </svg>
+                <span>Learn More</span>
               </a>
             </div>
           </div>
@@ -214,32 +220,37 @@ export default function HomePage() {
               Join TankLens today and take control of your water management.
             </p>
             
-            {isAuthenticated ? (
-              <Link 
-                href="/dashboard" 
-                className="inline-block px-10 py-4 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-all text-lg font-medium shadow-lg shadow-primary/30 transform hover:scale-105 relative overflow-hidden group"
-              >
-                <span className="relative z-10 flex items-center justify-center gap-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
-                    <path d="M18.375 2.25c-1.035 0-1.875.84-1.875 1.875v15.75c0 1.035.84 1.875 1.875 1.875h.75c1.035 0 1.875-.84 1.875-1.875V4.125c0-1.036-.84-1.875-1.875-1.875h-.75zM9.75 8.625c0-1.036.84-1.875 1.875-1.875h.75c1.036 0 1.875.84 1.875 1.875v11.25c0 1.035-.84 1.875-1.875 1.875h-.75c-1.036 0-1.875-.84-1.875-1.875V8.625zM3 13.125c0-1.036.84-1.875 1.875-1.875h.75c1.036 0 1.875.84 1.875 1.875v6.75c0 1.035-.84 1.875-1.875 1.875h-.75C3.84 21.75 3 20.91 3 19.875v-6.75z" />
+            <div className="px-4 sm:px-0">
+              {isAuthenticated ? (
+                <Link 
+                  href="/dashboard" 
+                  className="inline-block w-full sm:w-auto px-10 py-4 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 active:scale-95 transition-all duration-200 text-lg font-semibold shadow-lg shadow-primary/30 relative overflow-hidden group"
+                >
+                  <span className="relative z-10 flex items-center justify-center gap-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+                      <path d="M18.375 2.25c-1.035 0-1.875.84-1.875 1.875v15.75c0 1.035.84 1.875 1.875 1.875h.75c1.035 0 1.875-.84 1.875-1.875V4.125c0-1.036-.84-1.875-1.875-1.875h-.75zM9.75 8.625c0-1.036.84-1.875 1.875-1.875h.75c1.036 0 1.875.84 1.875 1.875v11.25c0 1.035-.84 1.875-1.875 1.875h-.75c-1.036 0-1.875-.84-1.875-1.875V8.625zM3 13.125c0-1.036.84-1.875 1.875-1.875h.75c1.036 0 1.875.84 1.875 1.875v6.75c0 1.035-.84 1.875-1.875 1.875h-.75C3.84 21.75 3 20.91 3 19.875v-6.75z" />
+                    </svg>
+                    <span>Go to Dashboard</span>
+                  </span>
+                  <span className="absolute inset-0 bg-gradient-to-r from-primary/20 to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl"></span>
+                </Link>
+              ) : (
+                <Link 
+                  href="/auth/login" 
+                  className="inline-block w-full sm:w-auto px-10 py-4 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 active:scale-95 transition-all duration-200 text-lg font-semibold shadow-lg shadow-primary/30 flex items-center justify-center gap-3"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+                    <path d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
                   </svg>
-                  Go to Dashboard
-                </span>
-                <span className="absolute bottom-0 left-0 h-1 w-full bg-white transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform"></span>
-              </Link>
-            ) : (
-              <Link 
-                href="/auth/login" 
-                className="px-8 py-3 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors text-lg font-medium"
-              >
-                Sign Up Now
-              </Link>
-            )}
+                  <span>Sign Up Now</span>
+                </Link>
+              )}
+            </div>
           </div>
         </section>
       </main>
       
-      
+      <BottomNav isAuthenticated={isAuthenticated} />
     </div>
   );
 }
