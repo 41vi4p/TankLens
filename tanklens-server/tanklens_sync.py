@@ -3,7 +3,7 @@
 TankLens Data Sync Server
 
 This script fetches data from Firebase Realtime Database and stores it in Firestore
-on an hourly basis for graph visualization on the user dashboard.
+every 10 minutes for graph visualization on the user dashboard.
 """
 
 import os
@@ -159,10 +159,10 @@ def main():
     # Create scheduler
     scheduler = BackgroundScheduler()
     
-    # Schedule sync task to run every hour at the top of the hour
+    # Schedule sync task to run every 10 minutes
     scheduler.add_job(
         sync_tank_data,
-        trigger=CronTrigger(minute=0),  # Run at the top of every hour
+        trigger=CronTrigger(minute='*/10'),  # Run every 10 minutes
         id='sync_tank_data',
         name='Sync tank data from RTDB to Firestore'
     )
@@ -178,7 +178,7 @@ def main():
     
     # Start the scheduler
     scheduler.start()
-    logger.info("Scheduler started. Synchronization will occur every hour.")
+    logger.info("Scheduler started. Synchronization will occur every 10 minutes.")
     
     try:
         # Keep the script running

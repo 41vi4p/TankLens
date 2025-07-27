@@ -60,3 +60,87 @@
 2025-05-16 07:40:41,848 - apscheduler.executors.default - WARNING - Run time of job "Sync tank data from RTDB to Firestore (trigger: cron[minute='0'], next run at: 2025-05-16 08:00:00 IST)" was missed by 0:40:41.848383
 2025-05-16 07:58:27,392 - apscheduler.scheduler - INFO - Scheduler has been shut down
 2025-05-16 07:58:27,393 - __main__ - INFO - Scheduler shut down. Exiting application.
+2025-07-27 12:42:01,148 - __main__ - INFO - Starting TankLens Data Sync Server
+2025-07-27 12:42:01,179 - __main__ - INFO - Firebase initialized successfully
+2025-07-27 12:42:01,182 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-07-27 12:42:01,188 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-07-27 12:42:01,189 - apscheduler.scheduler - INFO - Added job "Sync tank data from RTDB to Firestore" to job store "default"
+2025-07-27 12:42:01,189 - apscheduler.scheduler - INFO - Added job "Initial tank data sync" to job store "default"
+2025-07-27 12:42:01,189 - apscheduler.scheduler - INFO - Scheduler started
+2025-07-27 12:42:01,189 - __main__ - INFO - Scheduler started. Synchronization will occur every hour.
+2025-07-27 12:42:01,189 - apscheduler.executors.default - INFO - Running job "Initial tank data sync (trigger: date[2025-07-27 12:42:01 IST], next run at: 2025-07-27 12:42:01 IST)" (scheduled at 2025-07-27 12:42:01.182499+05:30)
+2025-07-27 12:42:01,190 - apscheduler.scheduler - INFO - Removed job initial_sync
+2025-07-27 12:42:01,190 - __main__ - INFO - Starting tank data synchronization
+2025-07-27 12:42:01,629 - __main__ - INFO - Found 1 devices with owner access
+2025-07-27 12:42:01,629 - __main__ - INFO - Processing device: DEV_01
+2025-07-27 12:42:02,252 - __main__ - INFO - Successfully updated Firestore for device: DEV_01
+2025-07-27 12:42:02,252 - __main__ - INFO - Completed synchronization. Processed 1/1 devices successfully
+2025-07-27 12:42:02,252 - apscheduler.executors.default - INFO - Job "Initial tank data sync (trigger: date[2025-07-27 12:42:01 IST], next run at: 2025-07-27 12:42:01 IST)" executed successfully
+2025-07-27 12:48:06,431 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2025-07-27 12:48:06,431 - __main__ - INFO - Scheduler shut down. Exiting application.
+2025-07-27 12:48:08,249 - __main__ - INFO - Starting TankLens Data Sync Server
+2025-07-27 12:48:08,277 - __main__ - INFO - Firebase initialized successfully
+2025-07-27 12:48:08,278 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-07-27 12:48:08,284 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-07-27 12:48:08,285 - apscheduler.scheduler - INFO - Added job "Sync tank data from RTDB to Firestore" to job store "default"
+2025-07-27 12:48:08,285 - apscheduler.scheduler - INFO - Added job "Initial tank data sync" to job store "default"
+2025-07-27 12:48:08,285 - apscheduler.scheduler - INFO - Scheduler started
+2025-07-27 12:48:08,285 - __main__ - INFO - Scheduler started. Synchronization will occur every 30 minutes.
+2025-07-27 12:48:08,285 - apscheduler.executors.default - INFO - Running job "Initial tank data sync (trigger: date[2025-07-27 12:48:08 IST], next run at: 2025-07-27 12:48:08 IST)" (scheduled at 2025-07-27 12:48:08.278197+05:30)
+2025-07-27 12:48:08,286 - apscheduler.scheduler - INFO - Removed job initial_sync
+2025-07-27 12:48:08,286 - __main__ - INFO - Starting tank data synchronization
+2025-07-27 12:48:08,675 - __main__ - INFO - Found 1 devices with owner access
+2025-07-27 12:48:08,675 - __main__ - INFO - Processing device: DEV_01
+2025-07-27 12:48:09,059 - __main__ - INFO - Successfully updated Firestore for device: DEV_01
+2025-07-27 12:48:09,059 - __main__ - INFO - Completed synchronization. Processed 1/1 devices successfully
+2025-07-27 12:48:09,060 - apscheduler.executors.default - INFO - Job "Initial tank data sync (trigger: date[2025-07-27 12:48:08 IST], next run at: 2025-07-27 12:48:08 IST)" executed successfully
+2025-07-27 13:00:00,001 - apscheduler.executors.default - INFO - Running job "Sync tank data from RTDB to Firestore (trigger: cron[minute='0,30'], next run at: 2025-07-27 13:30:00 IST)" (scheduled at 2025-07-27 13:00:00+05:30)
+2025-07-27 13:00:00,001 - __main__ - INFO - Starting tank data synchronization
+2025-07-27 13:00:00,082 - __main__ - INFO - Found 1 devices with owner access
+2025-07-27 13:00:00,082 - __main__ - INFO - Processing device: DEV_01
+2025-07-27 13:00:00,684 - __main__ - INFO - Successfully updated Firestore for device: DEV_01
+2025-07-27 13:00:00,684 - __main__ - INFO - Completed synchronization. Processed 1/1 devices successfully
+2025-07-27 13:00:00,684 - apscheduler.executors.default - INFO - Job "Sync tank data from RTDB to Firestore (trigger: cron[minute='0,30'], next run at: 2025-07-27 13:30:00 IST)" executed successfully
+2025-07-27 13:04:40,219 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2025-07-27 13:04:40,220 - __main__ - INFO - Scheduler shut down. Exiting application.
+2025-07-27 13:04:41,736 - __main__ - INFO - Starting TankLens Data Sync Server
+2025-07-27 13:04:41,770 - __main__ - INFO - Firebase initialized successfully
+2025-07-27 13:04:41,773 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-07-27 13:04:41,780 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-07-27 13:04:41,780 - apscheduler.scheduler - INFO - Added job "Sync tank data from RTDB to Firestore" to job store "default"
+2025-07-27 13:04:41,781 - apscheduler.scheduler - INFO - Added job "Initial tank data sync" to job store "default"
+2025-07-27 13:04:41,781 - apscheduler.scheduler - INFO - Scheduler started
+2025-07-27 13:04:41,781 - __main__ - INFO - Scheduler started. Synchronization will occur every 30 minutes.
+2025-07-27 13:04:41,781 - apscheduler.executors.default - INFO - Running job "Initial tank data sync (trigger: date[2025-07-27 13:04:41 IST], next run at: 2025-07-27 13:04:41 IST)" (scheduled at 2025-07-27 13:04:41.773796+05:30)
+2025-07-27 13:04:41,781 - apscheduler.scheduler - INFO - Removed job initial_sync
+2025-07-27 13:04:41,782 - __main__ - INFO - Starting tank data synchronization
+2025-07-27 13:04:42,090 - __main__ - INFO - Found 1 devices with owner access
+2025-07-27 13:04:42,091 - __main__ - INFO - Processing device: DEV_01
+2025-07-27 13:04:42,417 - __main__ - INFO - Successfully updated Firestore for device: DEV_01
+2025-07-27 13:04:42,417 - __main__ - INFO - Completed synchronization. Processed 1/1 devices successfully
+2025-07-27 13:04:42,417 - apscheduler.executors.default - INFO - Job "Initial tank data sync (trigger: date[2025-07-27 13:04:41 IST], next run at: 2025-07-27 13:04:41 IST)" executed successfully
+2025-07-27 13:08:14,982 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2025-07-27 13:08:14,983 - __main__ - INFO - Scheduler shut down. Exiting application.
+2025-07-27 13:08:16,336 - __main__ - INFO - Starting TankLens Data Sync Server
+2025-07-27 13:08:16,363 - __main__ - INFO - Firebase initialized successfully
+2025-07-27 13:08:16,364 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-07-27 13:08:16,370 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-07-27 13:08:16,371 - apscheduler.scheduler - INFO - Added job "Sync tank data from RTDB to Firestore" to job store "default"
+2025-07-27 13:08:16,371 - apscheduler.scheduler - INFO - Added job "Initial tank data sync" to job store "default"
+2025-07-27 13:08:16,371 - apscheduler.scheduler - INFO - Scheduler started
+2025-07-27 13:08:16,371 - __main__ - INFO - Scheduler started. Synchronization will occur every 10 minutes.
+2025-07-27 13:08:16,371 - apscheduler.executors.default - INFO - Running job "Initial tank data sync (trigger: date[2025-07-27 13:08:16 IST], next run at: 2025-07-27 13:08:16 IST)" (scheduled at 2025-07-27 13:08:16.364771+05:30)
+2025-07-27 13:08:16,372 - apscheduler.scheduler - INFO - Removed job initial_sync
+2025-07-27 13:08:16,372 - __main__ - INFO - Starting tank data synchronization
+2025-07-27 13:08:16,762 - __main__ - INFO - Found 1 devices with owner access
+2025-07-27 13:08:16,762 - __main__ - INFO - Processing device: DEV_01
+2025-07-27 13:08:17,119 - __main__ - INFO - Successfully updated Firestore for device: DEV_01
+2025-07-27 13:08:17,119 - __main__ - INFO - Completed synchronization. Processed 1/1 devices successfully
+2025-07-27 13:08:17,119 - apscheduler.executors.default - INFO - Job "Initial tank data sync (trigger: date[2025-07-27 13:08:16 IST], next run at: 2025-07-27 13:08:16 IST)" executed successfully
+2025-07-27 13:10:00,001 - apscheduler.executors.default - INFO - Running job "Sync tank data from RTDB to Firestore (trigger: cron[minute='*/10'], next run at: 2025-07-27 13:20:00 IST)" (scheduled at 2025-07-27 13:10:00+05:30)
+2025-07-27 13:10:00,001 - __main__ - INFO - Starting tank data synchronization
+2025-07-27 13:10:00,052 - __main__ - INFO - Found 1 devices with owner access
+2025-07-27 13:10:00,053 - __main__ - INFO - Processing device: DEV_01
+2025-07-27 13:10:00,355 - __main__ - INFO - Successfully updated Firestore for device: DEV_01
+2025-07-27 13:10:00,355 - __main__ - INFO - Completed synchronization. Processed 1/1 devices successfully
+2025-07-27 13:10:00,361 - apscheduler.executors.default - INFO - Job "Sync tank data from RTDB to Firestore (trigger: cron[minute='*/10'], next run at: 2025-07-27 13:20:00 IST)" executed successfully

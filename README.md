@@ -1,19 +1,24 @@
 # TankLens 🌊
 
-**IoT-based Water Level Monitoring System**
+**IoT-based Water Level Monitoring System v1.4**
 
-TankLens is a comprehensive water level monitoring solution that combines ESP32 IoT sensors, real-time data synchronization, and a modern web dashboard to help you monitor your water tanks remotely with precision and ease.
+TankLens is a comprehensive water level monitoring solution that combines ESP32 IoT sensors, waterproof ultrasonic sensors, real-time data synchronization, and a modern web dashboard to help you monitor your water tanks remotely with precision and ease.
+
+![Version](https://img.shields.io/badge/version-1.4-blue.svg) ![License](https://img.shields.io/badge/license-MIT-green.svg) ![Status](https://img.shields.io/badge/status-active-brightgreen.svg)
 
 ## 🚀 Features
 
-- **Real-time Water Level Monitoring**: ESP32-based sensors with ultrasonic distance measurement
+- **Real-time Water Level Monitoring**: ESP32-based sensors with A02YYUW waterproof ultrasonic sensor
 - **Smart Calibration**: Configurable tank parameters for accurate percentage calculations
-- **Live Dashboard**: Modern React/Next.js web interface with beautiful charts and metrics
+- **Live Dashboard**: Modern React/Next.js web interface with interactive charts and real-time metrics
 - **User Authentication**: Secure Google OAuth integration
 - **Device Sharing**: Share tank monitoring access with multiple users
-- **Historical Data**: Automated data collection and storage with Firestore integration
+- **Historical Data**: Automated data collection with 10-minute sync intervals
+- **Dual Data Sources**: Historical data from Firestore + real-time data from Firebase RTDB
+- **Waterproof Design**: IP67-rated A02YYUW sensor for reliable tank monitoring
+- **UART Communication**: Reliable serial communication (9600 baud) instead of trigger/echo
+- **Enhanced Performance**: Faster measurements with improved sensor reliability
 - **Responsive Design**: Mobile-friendly interface with dark/light theme support
-- **Real-time Sync**: Hourly data synchronization from Firebase Realtime Database to Firestore
 
 ## 🏗️ System Architecture
 
@@ -58,9 +63,11 @@ ESP32 Sensor → Firebase RTDB → Python Sync Server → Firestore → Web Dash
    - `emptyTankDistance`: Distance when tank is empty (cm)
    - `fullTankDistance`: Distance when tank is full (cm)
 
-4. Upload code to ESP32 and connect ultrasonic sensor (AJ-SR04M):
-   - Trigger Pin: GPIO13
-   - Echo Pin: GPIO18
+4. Upload code to ESP32 and connect A02YYUW waterproof ultrasonic sensor:
+   - RX Pin: D15 (GPIO15) - connects to sensor TX
+   - TX Pin: D18 (GPIO18) - connects to sensor RX
+   - Communication: UART Serial (9600 baud)
+   - Power: 3.3-5V, IP67 waterproof rating
 
 ### 2. Web Application Setup
 
@@ -136,9 +143,12 @@ Water level percentages are calculated based on ultrasonic distance measurements
 ### ESP32 Settings
 
 - **Measurement Interval**: 1 second for distance readings
-- **Upload Interval**: 20 seconds (configurable via Firebase)
-- **Moving Average**: 10 readings for stability
+- **Upload Interval**: 30 seconds (configurable via Firebase)
+- **Moving Average**: 5 readings for stability
+- **Sensor Communication**: UART Serial (9600 baud)
+- **Sensor Range**: 3-450cm with IP67 waterproof protection
 - **WiFi Auto-reconnect**: Enabled for reliability
+- **Data Sync**: Real-time to Firebase RTDB, historical sync every 10 minutes to Firestore
 
 ### Firebase Structure
 
@@ -198,6 +208,16 @@ Backend:
 ```bash
 python tanklens_sync.py  # Start sync server
 ```
+
+## 📋 Version History
+
+See [CHANGELOG.md](https://github.com/41vi4p/TankLens/blob/main/version_changelog.md) for detailed version history and release notes.
+
+**Latest Version**: v1.4 (Current)
+- A02YYUW waterproof sensor integration
+- Enhanced UART communication
+- 10-minute historical data sync
+- Improved dashboard with dual data sources
 
 ## 🔒 Security
 

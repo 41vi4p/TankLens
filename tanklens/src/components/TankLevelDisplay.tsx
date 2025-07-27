@@ -332,7 +332,10 @@ export function TankLevelDisplay({ device, onRefresh }: {
       <div className="flex justify-between items-center mt-2 text-xs text-foreground/50">
         <span>Last updated: {levelInfo.lastUpdated}</span>
         {filteredData.length > 0 && (
-          <span>{filteredData.length} data points</span>
+          <div className="flex items-center gap-2">
+            <span>{filteredData.length} data points</span>
+            <span className="text-blue-600">📊 Historical + 📡 Live</span>
+          </div>
         )}
       </div>
     </div>

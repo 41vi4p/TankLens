@@ -6,8 +6,9 @@
  * - Smart 20cm minimum distance handling with trend estimation
  * - Enhanced sensor reliability
  * 
- * Hardware: ESP32 + AJ-SR04M Sensor
- * Pins: Trig=GPIO15, Echo=GPIO18
+ * Hardware: ESP32 + A02YYUW Waterproof Ultrasonic Sensor
+ * Communication: UART Serial (9600 baud)
+ * Pins: RX=D15 (GPIO15), TX=D18 (GPIO18)
  */
 
 #include <WiFi.h>
@@ -20,15 +21,16 @@
 // Include configuration
 #include "config.h"
 
-// AJ-SR04M Ultrasonic Sensor pins
-const int trigPin = 15;    // GPIO15 for trigger (matches your working test)
-const int echoPin = 18;    // GPIO18 for echo
+// A02YYUW Ultrasonic Sensor UART pins
+HardwareSerial sensorSerial(2);  // Use Serial2 for sensor communication
+const int rxPin = 15;    // D15 (GPIO15) for RX - connects to sensor TX
+const int txPin = 18;    // D18 (GPIO18) for TX - connects to sensor RX
 
 // Tank calibration values (calculated from config)
 const float emptyTankDistance = SENSOR_MOUNT_HEIGHT_CM + TANK_HEIGHT_CM;  // Distance when tank is empty
 const float fullTankDistance = SENSOR_MOUNT_HEIGHT_CM + MIN_SENSOR_DISTANCE_CM;   // Distance when tank is full (min measurable)
 
-// Measurement settings
+// Measurement settings (A02YYUW has 100ms response time)
 const int measurementInterval = 1000; // Measure every 1 second
 const int numReadingsForAverage = 5; // Number of readings to average
 float distanceReadings[5];          // Array to store distance readings
@@ -67,6 +69,7 @@ void setup() {
   delay(1000);
   Serial.println("TankLens Water Level Monitoring System v2.0");
   Serial.println("============================================");
+  Serial.println("Sensor: A02YYUW Waterproof Ultrasonic (UART)");
   Serial.println("Device ID: " + String(DEVICE_ID));
   Serial.println("Configuration:");
   Serial.printf("  Tank Height: %d cm\n", TANK_HEIGHT_CM);
@@ -76,9 +79,10 @@ void setup() {
   Serial.printf("  Full tank distance: %.1f cm\n", fullTankDistance);
   Serial.println("============================================");
   
-  // Initialize ultrasonic sensor pins
-  pinMode(trigPin, OUTPUT);
-  pinMode(echoPin, INPUT);
+  // Initialize A02YYUW sensor UART communication
+  sensorSerial.begin(9600, SERIAL_8N1, rxPin, txPin);
+  delay(200); // Allow sensor to initialize
+  Serial.println("A02YYUW sensor initialized on Serial2");
   
   // Initialize historical data arrays
   for (int i = 0; i < historySize; i++) {
@@ -168,8 +172,8 @@ void loop() {
     // Measure distance
     float currentDistance = measureDistance();
     
-    // Check if distance reading is valid (not error and within reliable range)
-    bool isValidReading = (currentDistance >= MIN_SENSOR_DISTANCE_CM && currentDistance <= 400 && currentDistance >= 0);
+    // Check if distance reading is valid (not error and within DYP-A02YYUW range)
+    bool isValidReading = (currentDistance >= MIN_SENSOR_DISTANCE_CM && currentDistance <= 450 && currentDistance >= 0);
     
     float waterLevelPercentage;
     
@@ -403,23 +407,37 @@ float updateMovingAverage(float newReading) {
 }
 
 float measureDistance() {
-  // Use exact same approach as your working test code
-  digitalWrite(trigPin, LOW);
-  delayMicroseconds(2);
-  
-  digitalWrite(trigPin, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(trigPin, LOW);
-  
-  long duration = pulseIn(echoPin, HIGH);
-  float distance = (duration * 0.034) / 2;
-  
-  // Basic validation - return -1 if reading seems invalid
-  if (duration == 0 || distance < 2 || distance > 400) {
-    return -1;
+  // Clear old data from buffer
+  while (sensorSerial.available()) {
+    sensorSerial.read();
   }
   
-  return distance;
+  // Wait for data (A02YYUW auto-transmits every 100ms)
+  unsigned long startTime = millis();
+  while (sensorSerial.available() < 4 && (millis() - startTime) < 200) {
+    delay(1);
+  }
+  
+  if (sensorSerial.available() >= 4) {
+    // Read 4-byte frame
+    byte frame[4];
+    for (int i = 0; i < 4; i++) {
+      frame[i] = sensorSerial.read();
+    }
+    
+    // Validate frame header and calculate distance
+    if (frame[0] == 0xFF) {
+      int distanceMm = (frame[1] << 8) | frame[2];
+      float distanceCm = distanceMm / 10.0;
+      
+      // Range validation
+      if (distanceCm >= 3 && distanceCm <= 450) {
+        return distanceCm;
+      }
+    }
+  }
+  
+  return -1; // Invalid reading
 }
 
 float calculateWaterLevelPercentage(float distance) {

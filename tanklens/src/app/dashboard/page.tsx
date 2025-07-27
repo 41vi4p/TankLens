@@ -7,7 +7,7 @@ import { TankLevelDisplay, SensorDevice, fetchSensorData } from '@/components/Ta
 import { DeviceForm } from '@/components/DeviceForm';
 import { auth, db, getUserDevices, fetchRealTimeSensorData, deleteDevice } from '@/lib/firebase';
 import { useRouter } from 'next/navigation';
-import { doc, getDoc, updateDoc, arrayUnion } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, arrayUnion, collection, query, getDocs } from 'firebase/firestore';
 import { PlusIcon, UserCircleIcon, ShareIcon, TrashIcon } from '@heroicons/react/24/outline';
 
 export default function DashboardPage() {
@@ -106,7 +106,6 @@ export default function DashboardPage() {
           const data = deviceSnap.data();
           
           // Fetch current real-time data from Firebase Realtime Database
-          // Only fetch if user is authenticated
           let currentData = null;
           try {
             currentData = await fetchRealTimeSensorData(deviceId);
@@ -114,10 +113,42 @@ export default function DashboardPage() {
             console.log(`Could not fetch real-time data for ${deviceId}:`, error);
           }
           
-          // Combine historical data with current reading
+          // Get historical data from Firestore (synced every 10 minutes)
           let historicalData = data.data || [];
           
-          // If we have current real-time data, add it to the historical data
+          // Fetch additional historical data from Firestore history subcollection
+          try {
+            const historyRef = collection(db, 'devices', deviceId, 'history');
+            const historyQuery = query(historyRef);
+            const historySnapshot = await getDocs(historyQuery);
+            
+            const historyData: any[] = [];
+            historySnapshot.forEach((doc) => {
+              const historyItem = doc.data();
+              historyData.push({
+                timestamp: historyItem.timestamp,
+                level: historyItem.level,
+                status: 'measured'
+              });
+            });
+            
+            // Sort by timestamp and combine with existing data
+            const allData = [...historicalData, ...historyData];
+            const uniqueData = allData.filter((item, index, self) => 
+              index === self.findIndex((t) => 
+                new Date(t.timestamp).getTime() === new Date(item.timestamp).getTime()
+              )
+            );
+            
+            // Sort by timestamp
+            historicalData = uniqueData.sort((a, b) => 
+              new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+            );
+          } catch (error) {
+            console.log(`Could not fetch historical data for ${deviceId}:`, error);
+          }
+          
+          // Add current real-time data as the latest reading
           if (currentData) {
             const currentReading = {
               timestamp: currentData.timestamp,
