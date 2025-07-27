@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
-## [v1.4] - 2025-01-27
+## [v1.4] - 2025-07-27
 
 ### 🎯 Major Hardware Upgrade
 **A02YYUW Waterproof Sensor Integration**
@@ -63,7 +63,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
-## [v1.3] - 2025-01-20
+## [v1.3] - 2025-07-20
 
 ### Added
 - **Enhanced Chart Visualization**
@@ -105,7 +105,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
-## [v1.2] - 2025-01-15
+## [v1.2] - 2025-07-15
 
 ### Added
 - **Advanced Sensor Features**
@@ -141,7 +141,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
-## [v1.1] - 2025-01-10
+## [v1.1] - 2025-07-10
 
 ### Added
 - **User Authentication System**
@@ -177,7 +177,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
-## [v1.0] - 2025-01-05
+## [v1.0] - 2025-05-15
 
 ### Added
 - **Initial Release**
@@ -201,47 +201,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
-## 🔮 Upcoming Features (Roadmap)
-
-### v1.5 (Planned)
-- **Multi-tank Support**
-  - Dashboard for multiple tanks
-  - Comparative analytics
-  - Tank grouping and organization
-
-- **Alert System**
-  - Low water level notifications
-  - Email/SMS alerts
-  - Custom threshold settings
-
-### v1.6 (Planned)
-- **Advanced Analytics**
-  - Water usage patterns
-  - Consumption predictions
-  - Historical trends analysis
-
-- **Mobile App**
-  - Native iOS/Android applications
-  - Push notifications
-  - Offline data viewing
-
-### v2.0 (Future)
-- **IoT Hub Integration**
-  - Multiple sensor types support
-  - Advanced device management
-  - Industrial monitoring features
-
----
 
 ## 📊 Version Statistics
 
 | Version | Release Date | Major Features | Sensor Type | Sync Interval |
 |---------|-------------|----------------|-------------|---------------|
-| v1.4    | 2025-01-27  | A02YYUW Sensor, UART, Dual Data | A02YYUW | 10 minutes |
-| v1.3    | 2025-01-20  | Advanced Charts, Auto-refresh | AJ-SR04M | 60 minutes |
-| v1.2    | 2025-01-15  | Trend Analysis, Firestore | AJ-SR04M | 60 minutes |
-| v1.1    | 2025-01-10  | Authentication, Device Management | AJ-SR04M | Manual |
-| v1.0    | 2025-01-05  | Initial Release | AJ-SR04M | Manual |
+| v1.4    | 2025-07-27  | A02YYUW Sensor, UART, Dual Data | A02YYUW | 10 minutes |
+| v1.3    | 2025-07-20  | Advanced Charts, Auto-refresh | AJ-SR04M | 60 minutes |
+| v1.2    | 2025-07-15  | Trend Analysis, Firestore | AJ-SR04M | 60 minutes |
+| v1.1    | 2025-07-10  | Authentication, Device Management | AJ-SR04M | Manual |
+| v1.0    | 2025-05-15  | Initial Release | AJ-SR04M | Manual |
 
 ---
 
