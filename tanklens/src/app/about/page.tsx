@@ -133,7 +133,7 @@ export default function AboutPage() {
                   <span className="text-primary">📡</span>
                   <div>
                     <h3 className="font-semibold">Real-time Monitoring</h3>
-                    <p className="text-sm text-foreground/70">Live water level tracking with 30-second updates</p>
+                    <p className="text-sm text-foreground/70">Live water level tracking with 5-second updates</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
@@ -352,7 +352,7 @@ export default function AboutPage() {
                 <div>
                   <h3 className="font-semibold">Cloud Transmission</h3>
                   <p className="text-sm text-foreground/70">
-                    Processed data is sent to Firebase Realtime Database via Wi-Fi every 30 seconds.
+                    Processed data is sent to Firebase Realtime Database via Wi-Fi, with dashboard updates every 5 seconds.
                   </p>
                 </div>
               </div>

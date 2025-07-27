@@ -143,6 +143,7 @@ Water level percentages are calculated based on ultrasonic distance measurements
 ### ESP32 Settings
 
 - **Measurement Interval**: 1 second for distance readings
+- **Dashboard Refresh**: 5 seconds for real-time updates
 - **Upload Interval**: 30 seconds (configurable via Firebase)
 - **Moving Average**: 5 readings for stability
 - **Sensor Communication**: UART Serial (9600 baud)

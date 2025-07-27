@@ -54,14 +54,14 @@ export default function DashboardPage() {
     return () => unsubscribe();
   }, [router]);
 
-  // Auto-refresh devices every 30 seconds
+  // Auto-refresh devices every 5 seconds
   useEffect(() => {
     if (!user || !autoRefreshEnabled) return;
 
     const autoRefreshInterval = setInterval(() => {
       loadDevices(user.uid);
       setLastRefreshTime(new Date().toLocaleTimeString());
-    }, 30000); // 30 seconds
+    }, 5000); // 5 seconds
 
     return () => clearInterval(autoRefreshInterval);
   }, [user, autoRefreshEnabled]);
@@ -378,7 +378,7 @@ export default function DashboardPage() {
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 lg:gap-6">
                 {devices.map((device) => (
                   <div key={device.id} className="relative">
                     <div className="absolute top-3 right-3 flex gap-2 z-10">

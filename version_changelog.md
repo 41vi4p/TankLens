@@ -59,7 +59,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - **Sensor Specifications**: Range 3-450cm, IP67, UART 9600 baud
 - **Communication Protocol**: 4-byte UART frames with checksum validation
 - **Power Requirements**: 3.3-5V, ≤8mA average current
-- **Data Sync**: Every 10 minutes (server) + Every 30 seconds (real-time)
+- **Data Sync**: Every 10 minutes (server) + Every 5 seconds (dashboard refresh)
 
 ---
 
@@ -73,7 +73,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
   - Responsive chart design for mobile devices
 
 - **Auto-refresh System**
-  - Automatic data refresh every 30 seconds
+  - Automatic data refresh every 5 seconds
   - Pause/resume auto-refresh functionality
   - Visibility-based refresh management
   - Last refresh timestamp display
